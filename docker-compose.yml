@@ -1,0 +1,32 @@
+version: "3.4"
+
+services:
+  my-nginx-service:
+    image: nginx
+    container_name: my-nginx-service
+    ports:
+      - 8000:80
+    environment:
+      - FOO=bar
+    logging:
+      driver: loki
+      options:
+        loki-url: http://localhost:3100/loki/api/v1/push
+        loki-external-labels: job=dockerlogs,owner=ruan,environment=development
+
+  grafana:
+    image: grafana/grafana:7.1.1
+    volumes:
+    - ./config/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+    ports:
+    - "3000:3000"
+
+  loki:
+   image: grafana/loki:v1.3.0
+   volumes:
+     - ./config/loki.yaml:/etc/config/loki.yaml
+   entrypoint:
+     - /usr/bin/loki
+     - -config.file=/etc/config/loki.yaml
+   ports:
+     - "3100:3100"
