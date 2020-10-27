@@ -14,6 +14,15 @@ services:
         loki-url: http://localhost:3100/loki/api/v1/push
         loki-external-labels: job=dockerlogs,owner=ruan,environment=development
 
+  logger-app:
+    image: ctovena/logger:0.1
+    container_name: logger
+    logging:
+      driver: loki
+      options:
+        loki-url: http://localhost:3100/loki/api/v1/push
+        loki-external-labels: job=dockerlogs,owner=ruan,environment=development
+
   grafana:
     image: grafana/grafana:7.2.2
     container_name: grafana
